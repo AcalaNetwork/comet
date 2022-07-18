@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.15;
 
+import "./CometModifiedConfiguration.sol";
 import "../Comet.sol";
 
 /**
@@ -8,9 +9,13 @@ import "../Comet.sol";
  * @notice This is solely used for testing upgrades
  * @author Compound
  */
-contract CometModified is Comet {
+contract CometModified is Comet, CometModifiedConfiguration {
 
-    constructor(Configuration memory config) Comet(config) {}
+    uint256 internal immutable newStorageSlot;
+
+    constructor(ModifiedConfiguration memory config) Comet(config.cometConfiguration) {
+        newStorageSlot = config.newStorageSlot;
+    }
 
     /**
      * @notice Initialize storage for a liquidator
@@ -20,7 +25,7 @@ contract CometModified is Comet {
         liquidatorPoints[liquidator].numAbsorbs = type(uint32).max;
     }
 
-    function newFunction() external pure returns (int) {
-        return 101;
+    function newFunction() external view returns (uint) {
+        return newStorageSlot;
     }
 }
