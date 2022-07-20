@@ -208,6 +208,10 @@ export async function deployNetworkComet(
     // Set the initial factory and configuration for Comet in Configurator
     const setFactoryCalldata = extractCalldata((await configurator.populateTransaction.setFactory(cometProxy.address, cometFactory.address)).data);
     const setConfigurationCalldata = extractCalldata((await configurator.populateTransaction.setConfiguration(cometProxy.address, configuration)).data);
+    // XXX This wouldn't work on mainnet!
+    // Think about how this should be adapted for mainnet. Would probably be through an actual proposal...
+    // Deploy all contracts, including comet? or dont deploy comet yet
+    //
     await fastGovernanceExecute(
       governorSimple.connect(adminSigner),
       [configuratorProxy.address, configuratorProxy.address],
