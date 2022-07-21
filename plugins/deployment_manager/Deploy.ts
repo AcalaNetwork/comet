@@ -117,7 +117,7 @@ export async function deploy<
   }
   if (deployOpts.lazyVerify) {
     // Cache params for verification
-    await putVerifyArgs(deployOpts.cache, verifyArgs, contract.address);
+    await putVerifyArgs(deployOpts.cache, contract.address, verifyArgs);
   } else if (deployOpts.verify) {
     await verifyContract(
       verifyArgs,
@@ -154,7 +154,7 @@ export async function deployBuild(
   };
   if (deployOpts.lazyVerify) {
     // Cache params for verification
-    await putVerifyArgs(deployOpts.cache, verifyArgs, contract.address);
+    await putVerifyArgs(deployOpts.cache, contract.address, verifyArgs);
   } else if (deployOpts.verify) {
     // We need to do manual verification here, since this is coming
     // from a build file, not from hardhat's own compilation.
