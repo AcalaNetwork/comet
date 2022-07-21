@@ -8,7 +8,7 @@ import { putAlias } from './Aliases';
 import { putVerifyArgs } from './VerifyArgs';
 import { Cache } from './Cache';
 import { storeBuildFile } from './ContractMap';
-import { Address, Alias, BuildFile } from './Types';
+import { Alias, BuildFile } from './Types';
 import { debug, getPrimaryContract } from './Utils';
 import { VerifyArgs, verifyContract } from './Verify';
 
@@ -114,7 +114,7 @@ export async function deploy<
     via: 'artifacts',
     address: contract.address,
     constructorArguments: deployArgs,
-  }
+  };
   if (deployOpts.lazyVerify) {
     // Cache params for verification
     await putVerifyArgs(deployOpts.cache, contract.address, verifyArgs);
