@@ -129,6 +129,7 @@ export class DeploymentManager {
     return await deployBuild(buildFile, deployArgs, this.hre, await this.deployOpts());
   }
 
+  /* Verifies contracts using the verify arguments stored in cache */
   async verifyContracts() {
     let verifyArgs = await getVerifyArgs(this.cache);
     for (const address of verifyArgs.keys()) {
