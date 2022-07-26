@@ -226,20 +226,6 @@ export class DeploymentManager {
     return await generateMigration(this.cache, name, timestamp);
   }
 
-  /* Stores artifact from a migration, e.g. `deployments/test/artifacts/1644385406_my_new_migration.json`
-   **/
-  async storeArtifact<A>(migration: Migration<A>, artifact: A): Promise<string> {
-    let artifactSpec = getArtifactSpec(migration);
-    await this.cache.storeCache(artifactSpec, artifact);
-    return this.cache.getFilePath(artifactSpec);
-  }
-
-  /* Reads artifact from a migration, e.g. `deployments/test/artifacts/1644385406_my_new_migration.json`
-   **/
-  async readArtifact<A>(migration: Migration<A>): Promise<A> {
-    return await this.cache.readCache(getArtifactSpec(migration));
-  }
-
   async clone<C extends Contract>(address: string, args: any[], network?: string): Promise<C> {
     let buildFile = await this.import(address, network);
     return await this.deployBuild(buildFile, args) as C;
