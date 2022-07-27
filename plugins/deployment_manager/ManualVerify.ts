@@ -30,7 +30,7 @@ export async function manualVerifyContract(
     'verify:get-etherscan-endpoint'
   );
 
-  const etherscanAPIKey = resolveEtherscanApiKey(hre.config.etherscan, verificationNetwork);
+  const etherscanAPIKey = resolveEtherscanApiKey(hre.config.etherscan.apiKey, verificationNetwork);
   let contractAddress = contract.address.toLowerCase();
   let sourceName = contractMetadata.source;
   let metadata = JSON.parse(contractMetadata.metadata);

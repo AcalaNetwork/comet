@@ -31,6 +31,8 @@ export { Comet } from '../../build/types';
 import { DeployedContracts, ContractsToDeploy, ProtocolConfiguration } from './index';
 import { shouldDeploy } from '../utils';
 import { wait } from '../../test/helpers';
+import { HttpNetworkConfig } from 'hardhat/types';
+import { getMandalaGasParams } from '../../plugins/deployment_manager/Mandala';
 
 async function makeToken(
   deploymentManager: DeploymentManager,
@@ -283,10 +285,15 @@ export async function deployDevelopmentComet(
       (await configurator.populateTransaction.initialize(admin.address)).data,
     ]);
 
+    let overrides: any = {};
+    if (deploymentManager.hre.network.name.startsWith('mandala')) {
+      overrides = await getMandalaGasParams((deploymentManager.hre.network.config as HttpNetworkConfig).url);
+    }
+
     // Set the initial factory and configuration for Comet in Configurator
     const configuratorAsProxy = (configurator as Configurator).attach(configuratorProxy.address).connect(admin);
     await wait(configuratorAsProxy.setFactory(cometProxy.address, cometFactory.address));
-    await wait(configuratorAsProxy.setConfiguration(cometProxy.address, configuration));
+    await wait(configuratorAsProxy.setConfiguration(cometProxy.address, configuration, overrides));
 
     // Transfer ownership of Configurator
     await wait(configuratorAsProxy.transferGovernor(governor));

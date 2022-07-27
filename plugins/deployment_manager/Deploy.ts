@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as fs from 'fs/promises';
 
 import { Contract, Signer } from 'ethers';
-import { HardhatRuntimeEnvironment } from 'hardhat/types';
+import { HardhatRuntimeEnvironment, HttpNetworkConfig } from 'hardhat/types';
 
 import { putAlias } from './Aliases';
 import { Cache } from './Cache';
@@ -10,6 +10,7 @@ import { storeBuildFile } from './ContractMap';
 import { Alias, BuildFile } from './Types';
 import { debug, getPrimaryContract } from './Utils';
 import { verifyContract } from './Verify';
+import { getMandalaGasParams } from './Mandala';
 
 export abstract class Deployer<Contract, DeployArgs extends Array<any>> {
   abstract connect(signer: Signer): this;
@@ -37,7 +38,14 @@ async function deployFromBuildFile(
   const [ethersSigner] = await hre.ethers.getSigners();
   const signer = deployOpts.connect ?? ethersSigner;
   const contractFactory = new hre.ethers.ContractFactory(metadata.abi, metadata.bin, signer);
-  const contract = await contractFactory.deploy(...deployArgs);
+
+  let deployArgsAndOverrides = deployArgs.slice();
+  if (hre.network.name.startsWith('mandala')) {
+    const overrides = await getMandalaGasParams((hre.network.config as HttpNetworkConfig).url);
+    deployArgsAndOverrides.push(overrides);
+  }
+
+  const contract = await contractFactory.deploy(...deployArgsAndOverrides);
   const deployed = await contract.deployed();
   debug(`Deployed ${contractName}`);
   return deployed;
@@ -96,9 +104,15 @@ export async function deploy<
     factory = factory.connect(deployOpts.connect);
   }
 
-  debug(`Deploying ${contractName} with args`, deployArgs);
+  let deployArgsAndOverrides = deployArgs.slice() as DeployArgs;
+  if (hre.network.name.startsWith('mandala')) {
+    const overrides = await getMandalaGasParams((hre.network.config as HttpNetworkConfig).url);
+    deployArgsAndOverrides.push(overrides);
+  }
 
-  let contract = await factory.deploy(...deployArgs);
+  debug(`Deploying ${contractName} with args`, deployArgsAndOverrides);
+
+  let contract = await factory.deploy(...deployArgsAndOverrides);
   await contract.deployed();
 
   let buildFile = await getBuildFileFromArtifacts(contractFile, contractFileName);

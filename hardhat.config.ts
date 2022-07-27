@@ -71,6 +71,11 @@ const networkConfigs: NetworkConfig[] = [
     chainId: 43113,
     url: 'https://api.avax-test.network/ext/bc/C/rpc',
   },
+  {
+    network: 'mandala',
+    chainId: 595,
+    url: 'https://tc7-eth.aca-dev.network',
+  },
 ];
 
 function getDefaultProviderURL(network: string) {
@@ -148,7 +153,19 @@ const config: HardhatUserConfig = {
       // Avalanche
       avalanche: SNOWTRACE_KEY,
       avalancheFujiTestnet: SNOWTRACE_KEY,
+      // Mandala
+      mandala: ETHERSCAN_KEY,
     },
+    customChains: [
+      {
+        network: "mandala",
+        chainId: 595,
+        urls: {
+          apiURL: "https://blockscout.mandala.acala.network/api",
+          browserURL: "https://blockscout.mandala.acala.network"
+        }
+      }
+    ],
   },
 
   typechain: {

@@ -52,7 +52,7 @@
     "@compound-finance/hardhat-import": "^1.0.3",
     "@ethersproject/experimental": "^5.6.2",
     "@nomiclabs/hardhat-ethers": "^2.0.4",
-    "@nomiclabs/hardhat-etherscan": "3.0.0",
+    "@nomiclabs/hardhat-etherscan": "3.1.0",
     "@nomiclabs/hardhat-waffle": "^2.0.2",
     "@typechain/ethers-v5": "^8.0.2",
     "@typechain/hardhat": "^3.0.0",
